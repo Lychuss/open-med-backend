@@ -53,5 +53,26 @@ function registerSocketHandlers(io: Server) {
             })
 
         })
+
+        socket.on("webrtc:offer", ({ to, offer }) => {
+            if(!isInRoom(io, socket.id, to)) return;
+            io.to(to).emit("webrtc:offer", { from: socket, offer })
+        })
+
+        socket.on("webrtc:answer", ({ to, answer }) => {
+            if(!isInRoom(io, socket.id, to)) return;
+            io.to(to).emit("webrtc:answer", { from: socket.id, answer})
+        })
+
+        socket.on("webrtc:candidate", ({ to, candidate}) => {
+            if(!isInRoom(io, socket.id, to)) return;
+            io.to(to).emit("webrtc:candidate", { from: socket.id, candidate})
+        })
+
     })
+}
+
+function isInRoom(io: Server, from: string, to: string){
+    const roomId = io.sockets.sockets.get(from)?.data.roomId;
+    return !!roomId && io.sockets.adapter.rooms.get(roomId)?.has(to);
 }
