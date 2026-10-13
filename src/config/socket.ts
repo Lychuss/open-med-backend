@@ -1,3 +1,4 @@
+import { username } from "better-auth/plugins";
 import { app } from "../app";
 import dotenv from "dotenv";
 import { createServer } from "http";
@@ -26,7 +27,7 @@ io.on("connection", (socket) => {
 function registerSocketHandlers(io: Server) {
     io.on("connection", (socket) => {
 
-        socket.on("room:joined", async ({roomId, user, msg}) => {
+        socket.on("room:join", async ({roomId, user, msg}, ack) => {
 
             socket.join(roomId);
 
@@ -37,26 +38,16 @@ function registerSocketHandlers(io: Server) {
 
             socket.to(roomId).emit("room:user-joined", { msg: `Welcome ${user}, this is the room ${roomId}`})
 
-            socket.on("chat:message", (text: string, username: string) => {
-                
-                const roomId = socket.data.roomId;
-                console.log(roomId);
-                if(!roomId || !text) return;
-
-                io.to(roomId).emit("chat:message", {
-                    id: crypto.randomUUID(),
-                    from: socket.data.username,
-                    fromId: socket.id,
-                    text: text,
-                    at: Date.now()
-                })
-            })
-
+            const sockets = await io.in(roomId).fetchSockets();
+            const users = sockets
+                .filter((s) => s.id !== socket.id)
+                .map((s) => ({ id: s.id, username: s.data.username }));
+            ack?.({users});
         })
 
         socket.on("webrtc:offer", ({ to, offer }) => {
             if(!isInRoom(io, socket.id, to)) return;
-            io.to(to).emit("webrtc:offer", { from: socket, offer })
+            io.to(to).emit("webrtc:offer", { from: socket.id, offer })
         })
 
         socket.on("webrtc:answer", ({ to, answer }) => {
@@ -64,11 +55,10 @@ function registerSocketHandlers(io: Server) {
             io.to(to).emit("webrtc:answer", { from: socket.id, answer})
         })
 
-        socket.on("webrtc:candidate", ({ to, candidate}) => {
+        socket.on("webrtc:ice-candidate", ({ to, candidate}) => {
             if(!isInRoom(io, socket.id, to)) return;
-            io.to(to).emit("webrtc:candidate", { from: socket.id, candidate})
+            io.to(to).emit("webrtc:ice-candidate", { from: socket.id, candidate})
         })
-
     })
 }
 
