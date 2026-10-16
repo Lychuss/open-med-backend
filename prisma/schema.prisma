@@ -11,7 +11,7 @@ enum Role {
   PATIENT
   DOCTOR
 
-  @@map("user_roles)
+  @@map("user_roles")
 }
 
 enum Sex {
@@ -29,7 +29,8 @@ model User {
   sex           Sex
   age           Int
   city          String  
-  patient       Patient?
+  patient       Patients?
+  doctor        Doctors?
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
 
@@ -85,30 +86,38 @@ model Verification {
   @@map("verification")
 }
 
+model Patients {
+  id        String    @id @default(cuid())
+  userId    String    @unique
+  concern   Expertise[]
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("patient")
+}
+
+model Doctors {
+  id            String     @id @default(cuid())
+  userId        String     @unique
+  years         Int        @default(0)
+  school        String
+  hospital      String
+  online        Boolean
+  lastOnline    DateTime
+  education     String 
+  expertise     Expertise[]
+  user          User        @relation(fields:[userId], references:[id], onDelete: Cascade)
+
+  @@map("doctor")
+}
+
 model Expertise {
   id          String     @id
   name        String     @unique
   description String?
 
-  patient     Patient[] 
-  doctor      Doctor[]
+  patient     Patients[] 
+  doctor      Doctors[]
 
-  @@map("expertise)
-}
-
-
-model Patient {
-  id        String    @id @default(cuid())
-  userId    String    
-  concern   Expertise[]
-  
-
-  @@map("patient)
-}
-
-model Doctor {
-  id        String     @id @default(cuid())
-  userId    String
-      
+  @@map("expertise")
 }
 
