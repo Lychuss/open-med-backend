@@ -1,9 +1,11 @@
 {
   "dependencies": {
+    "@prisma/adapter-pg": "^7.10.1",
+    "@prisma/client": "^7.10.1",
     "@types/cors": "^2.8.19",
     "@types/express": "^5.0.6",
     "@types/uuid": "^10.0.0",
-    "better-auth": "^1.7.7",
+    "better-auth": "^1.7.10",
     "cors": "^2.8.6",
     "cron": "^4.4.0",
     "dotenv": "^18.0.7",
