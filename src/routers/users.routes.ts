@@ -1,6 +1,6 @@
 import express from 'express';
-import { getDoctors } from '../controllers/users.controller';
-import { requireAuth } from '../middlewares/authentication.middlewares';
+import { getDoctors } from '../controllers/users.controller.ts';
+import { requireAuth } from '../middlewares/authentication.middlewares.ts';
 
 const usersRouter = express.Router();
 

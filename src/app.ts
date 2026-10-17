@@ -2,8 +2,8 @@ import express from "express";
 import dotenv from "dotenv";
 import cors from "cors";
 
-import usersRouter from "./routers/users.routes";
-import { auth } from "../lib/better-auth";
+import usersRouter from "./routers/users.routes.ts";
+import { auth } from "../lib/better-auth.ts";
 import { toNodeHandler } from "better-auth/node";
 
 import type { Request, Response } from "express";
