@@ -36,15 +36,23 @@ export const auth = betterAuth({
             trustedProviders: ["google"],
         }
     },
-    rateLimit: {
-        window: 60,
-        enabled: true,
-        max: 100,
-        storage: 'database',
-        customRules: {
-            "/sign-in/email": { window: 60, max: 5},
-            "/sign-in/google": { window: 60, max: 5},
-            "/sign-up/email": { window: 60, max: 5}
+    // rateLimit: {
+    //     window: 60,
+    //     enabled: true,
+    //     max: 100,
+    //     storage: 'database',
+    //     customRules: {
+    //         "/sign-in/email": { window: 60, max: 5},
+    //         "/sign-in/google": { window: 60, max: 5},
+    //         "/sign-up/email": { window: 60, max: 5}
+    //     }
+    // },
+    user: {
+        additionalFields: {
+            age: { type: "number", required: true },
+            role: { type: "string", defaultValue: "PATIENT", input: false},
+            city: { type: "string", required: true},
+            sex: { type: "string", required: true },
         }
-    },
+    }
 });

@@ -25,17 +25,18 @@ model User {
   email         String    @unique
   emailVerified Boolean   @default(false)
   image         String?
-  role          Role    
-  sex           Sex
+  role          Role      @default(PATIENT)
+  sex           Sex       
   age           Int
   city          String  
   patient       Patients?
   doctor        Doctors?
+  accounts      Account[]
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
 
   sessions      Session[]
-  accounts      Account[]
+
 
   @@map("user")
 }
@@ -72,6 +73,8 @@ model Account {
 
   user                  User      @relation(fields: [userId], references: [id], onDelete: Cascade)
 
+
+  @@index([userId])
   @@map("account")
 }
 
@@ -102,7 +105,7 @@ model Doctors {
   school        String
   hospital      String
   online        Boolean
-  lastOnline    DateTime
+  lastOnline    DateTime   @default(now())
   education     String 
   expertise     Expertise[]
   user          User        @relation(fields:[userId], references:[id], onDelete: Cascade)
@@ -119,5 +122,15 @@ model Expertise {
   doctor      Doctors[]
 
   @@map("expertise")
+}
+
+model RateLimit {
+  id          String @id
+  key         String
+  count       Int
+  lastRequest BigInt
+
+  @@unique([key])
+  @@map("rateLimit")
 }
 
