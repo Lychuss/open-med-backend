@@ -19,6 +19,12 @@ enum Sex {
   FEMALE
 }
 
+enum VerificationStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}
+
 model User {
   id            String    @id @default(cuid())
   name          String
@@ -31,6 +37,7 @@ model User {
   city          String  
   patient       Patients?
   doctor        Doctors?
+  doctorApplication  DoctorApplication?
   accounts      Account[]
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
@@ -125,7 +132,7 @@ model Expertise {
 }
 
 model RateLimit {
-  id          String @id
+  id          String    @id
   key         String
   count       Int
   lastRequest BigInt
@@ -134,3 +141,18 @@ model RateLimit {
   @@map("rateLimit")
 }
 
+model DoctorApplication {
+  id            String             @id @default(cuid())
+  userId        String             @unique
+  licenseNumber String             @unique
+  licenseExpiry DateTime
+  school        String
+  hospital      String
+  status        VerificationStatus @default(PENDING)
+  reviewedAt    DateTime?
+  createdAt     DateTime           @default(now())
+
+  user          User               @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("doctor_application")
+}

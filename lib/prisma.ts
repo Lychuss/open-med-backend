@@ -1,7 +1,7 @@
 import dotenv from "dotenv";
 dotenv.config();
 
-import { PrismaClient } from "../src/generated/prisma/client";
+import { PrismaClient } from "../src/generated/prisma/client.ts";
 import prismaRandom from "prisma-extension-random";
 import { PrismaPg } from "@prisma/adapter-pg";
 

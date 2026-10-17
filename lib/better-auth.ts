@@ -3,7 +3,7 @@ dotenv.config();
 
 import { betterAuth } from 'better-auth';
 import { prismaAdapter } from "better-auth/adapters/prisma";
-import { prisma } from "../prisma/seed";
+import { prisma } from "../prisma/seed.ts";
 
 export const auth = betterAuth({
     advanced: {
