@@ -1,4 +1,4 @@
-import { server } from "./config/socket";
+import { server } from "./config/socket.js";
 import dotenv from "dotenv";
 dotenv.config();
 

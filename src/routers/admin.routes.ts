@@ -4,7 +4,7 @@ import { approvedDoctorController, rejectedDoctorController } from "../controlle
 
 const adminRouter = express.Router();
 
-adminRouter.put("admin/doctors/status/:applicationId/approved", requireAuth, approvedDoctorController);
-adminRouter.put("admin/doctors/status/:applicationId/rejected", requireAuth, rejectedDoctorController);
+adminRouter.put("/admin/doctors/status/:applicationId/approved", requireAuth, approvedDoctorController);
+adminRouter.put("/admin/doctors/status/:applicationId/rejected", requireAuth, rejectedDoctorController);
 
 export default adminRouter;

@@ -5,7 +5,6 @@ import { doctorApplicationBody } from "../models/doctor-application.model.ts";
 
 //Services
 import { addPendingDoctor, findDoctors } from "../services/users.services.ts";
-import { string } from "zod";
 
 export const doctorsApplicationController = async (req: Request, res: Response) => {
     const id = req.user?.id;
