@@ -1,5 +1,8 @@
-import type { Request, Response } from "express"
+import type { Request, Response } from "express";
+
+// Models
 import { doctorApplicationBody } from "../models/doctor-application.model.ts";
+import { expertiseModel } from "../models/expertise.models.ts";
 
 //Services
 import { addPendingDoctor } from "../services/users.services.ts";
@@ -27,5 +30,21 @@ export const doctorsApplication = async (req: Request, res: Response) => {
     } catch(err){
         console.error(err);
         return res.status(500).json({ message: "Internal server error!", success: false });
+    }
+}
+
+export const findExpertDoctors = async (req: Request, res: Response) => {
+    const expertise = req.body;
+    const data = expertiseModel.safeParse(expertise);
+
+    if(!expertise || !data.success){
+        return res.status(401).json({ message: "User didnt send the expert category!", success: false });
+    }
+
+    try {
+        
+    } catch(err){
+        console.error(err);
+        return res.status(500).json({ message: "Internal server error!", success: false })
     }
 }
