@@ -1,6 +1,16 @@
 import { prisma } from "../../lib/prisma.ts"
 
-export const acceptingDoctors = async (applicationId: string) => {
+export const acceptingDoctors = async (applicationId: string, adminId: string) => {
+
+    const isItAdmin = await prisma.user.findUnique({
+        where: {
+            id: adminId,
+            role: "ADMIN"
+        }
+    })
+
+    if(!isItAdmin) return;
+
     return await prisma.doctorsApplication.update({
         where: {
             id: applicationId,
@@ -12,7 +22,15 @@ export const acceptingDoctors = async (applicationId: string) => {
     })
 }
 
-export const rejectedDoctors = async (applicationId: string) => {
+export const rejectedDoctors = async (applicationId: string, adminId: string) => {
+    const isItAdmin = await prisma.user.findUnique({
+        where: {
+            id: adminId,
+            role: "ADMIN"
+        }
+    })
+
+    if(!isItAdmin) return;
     return await prisma.doctorsApplication.update({
         where: {
             id: applicationId,

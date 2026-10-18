@@ -4,15 +4,21 @@ import type { Request, Response } from "express";
 import { acceptingDoctors, rejectedDoctors } from "../services/admin.services.ts";
 
 export const approvedDoctorController = async (req: Request, res: Response) => {
+    const adminId = req.user?.id;
     const { userId } = req.params;
 
-    if(!userId || typeof userId !== "string"){
+    if(!userId || typeof userId !== "string" || !adminId){
         return res.status(402).json({ message: "User did not send the needed requirements", success: false})
     }
 
     try {
 
-        await acceptingDoctors;
+        const isItAccepted = await acceptingDoctors(userId, adminId);
+
+        if(!isItAccepted){
+            return res.status(401).json({ message: "Invalid request! You are not an admin", success: false})
+        }
+
 
         return res.status(202).json({ message: "Congrats user! Your request has been fully approved!", success: true })
 
@@ -23,15 +29,16 @@ export const approvedDoctorController = async (req: Request, res: Response) => {
 }
 
 export const rejectedDoctorController = async (req: Request, res: Response) => {
+    const adminId = req.user?.id;
     const { userId } = req.params;
 
-    if(!userId || typeof userId !== "string"){
+    if(!userId || typeof userId !== "string" || !adminId){
         return res.status(402).json({ message: "User did not send the needed requirements", success: false})
     }
 
     try {
 
-        await rejectedDoctors;
+        await rejectedDoctors(userId, adminId);
 
         return res.status(200).json({ message: "Unfornately we have to decline your request as it did not qualify for the requirements.", success: true })
 
