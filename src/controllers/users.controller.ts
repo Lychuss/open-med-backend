@@ -7,7 +7,7 @@ import { doctorApplicationBody } from "../models/doctor-application.model.ts";
 import { addPendingDoctor, findDoctors } from "../services/users.services.ts";
 import { string } from "zod";
 
-export const doctorsApplication = async (req: Request, res: Response) => {
+export const doctorsApplicationController = async (req: Request, res: Response) => {
     const id = req.user?.id;
     const data = doctorApplicationBody.safeParse(req.body);
 
@@ -22,7 +22,7 @@ export const doctorsApplication = async (req: Request, res: Response) => {
         
         await addPendingDoctor(data.data, id);
 
-        return res.status(200).json({ 
+        return res.status(201).json({ 
             message: "Your application is currently sent! Wait for further instructions while its pending.", 
             success: true 
         });
@@ -33,7 +33,7 @@ export const doctorsApplication = async (req: Request, res: Response) => {
     }
 }
 
-export const findExpertDoctors = async (req: Request, res: Response) => {
+export const findExpertDoctorsController = async (req: Request, res: Response) => {
     const { expertise } = req.params;
 
     if(!expertise || typeof expertise !== "string"){
