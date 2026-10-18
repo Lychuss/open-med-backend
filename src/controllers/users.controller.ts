@@ -5,7 +5,7 @@ import { doctorApplicationBody } from "../models/doctor-application.model.ts";
 import { expertiseModel } from "../models/expertise.models.ts";
 
 //Services
-import { addPendingDoctor } from "../services/users.services.ts";
+import { addPendingDoctor, findDoctors } from "../services/users.services.ts";
 
 export const doctorsApplication = async (req: Request, res: Response) => {
     const id = req.user?.id;
@@ -34,15 +34,18 @@ export const doctorsApplication = async (req: Request, res: Response) => {
 }
 
 export const findExpertDoctors = async (req: Request, res: Response) => {
-    const expertise = req.body;
-    const data = expertiseModel.safeParse(expertise);
+    const { expertiseName } = req.params;
+    const data = expertiseModel.safeParse(expertiseName);
 
-    if(!expertise || !data.success){
+    if(!expertiseName || !data.success){
         return res.status(401).json({ message: "User didnt send the expert category!", success: false });
     }
 
     try {
-        
+        const doctors = await findDoctors(data.data.name);
+        console.log(doctors);
+        return res.status(200).json({ message: "Successfully retrieve all doctors", data: doctors, success: true });
+
     } catch(err){
         console.error(err);
         return res.status(500).json({ message: "Internal server error!", success: false })
