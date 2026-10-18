@@ -5,6 +5,6 @@ import { requireAuth } from '../middlewares/authentication.middlewares.ts';
 const usersRouter = express.Router();
 
 usersRouter.post("/users/doctor/doctor-applications/verify", requireAuth, doctorsApplication);
-usersRouter.get("/user/doctor/catergory/:expertiseName", requireAuth, findExpertDoctors);
+usersRouter.post("/users/doctor/category/:expertise", requireAuth, findExpertDoctors);
 
 export default usersRouter;

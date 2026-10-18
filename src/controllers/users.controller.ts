@@ -2,10 +2,10 @@ import type { Request, Response } from "express";
 
 // Models
 import { doctorApplicationBody } from "../models/doctor-application.model.ts";
-import { expertiseModel } from "../models/expertise.models.ts";
 
 //Services
 import { addPendingDoctor, findDoctors } from "../services/users.services.ts";
+import { string } from "zod";
 
 export const doctorsApplication = async (req: Request, res: Response) => {
     const id = req.user?.id;
@@ -34,15 +34,14 @@ export const doctorsApplication = async (req: Request, res: Response) => {
 }
 
 export const findExpertDoctors = async (req: Request, res: Response) => {
-    const { expertiseName } = req.params;
-    const data = expertiseModel.safeParse(expertiseName);
+    const { expertise } = req.params;
 
-    if(!expertiseName || !data.success){
+    if(!expertise || typeof expertise !== "string"){
         return res.status(401).json({ message: "User didnt send the expert category!", success: false });
     }
 
     try {
-        const doctors = await findDoctors(data.data.name);
+        const doctors = await findDoctors(expertise);
         console.log(doctors);
         return res.status(200).json({ message: "Successfully retrieve all doctors", data: doctors, success: true });
 

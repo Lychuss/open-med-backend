@@ -2,7 +2,7 @@ import { prisma } from "../../lib/prisma.ts";
 import type { DoctorApplicationBody } from "../models/doctor-application.model.ts";
 
 export const findDoctors = async (expertiseTitle: string) => {
-    return prisma.doctorsApplication.findMany({
+    return await prisma.doctorsApplication.findMany({
         where: {
             expertise: {
                 some: {
