@@ -5,15 +5,19 @@ import { doctorApplicationBody } from "../models/doctor-application.model.ts";
 import { addPendingDoctor } from "../services/users.services.ts";
 
 export const doctorsApplication = async (req: Request, res: Response) => {
+    const id = req.user?.id;
     const data = doctorApplicationBody.safeParse(req.body);
 
-    if(!data.success){
+    console.log(id);
+    console.log(data);
+
+    if(!data.success || !id){
         return res.status(404).json({ message: "User client did not send all the needed requirements!", success: false });
     }
 
     try {
         
-        await addPendingDoctor(data.data);
+        await addPendingDoctor(data.data, id);
 
         return res.status(200).json({ 
             message: "Your application is currently sent! Wait for further instructions while its pending.", 

@@ -36,8 +36,7 @@ model User {
   age           Int
   city          String  
   patient       Patients?
-  doctor        Doctors?
-  doctorApplication  DoctorApplication?
+  doctorApplication        DoctorsApplication?
   accounts      Account[]
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
@@ -105,28 +104,13 @@ model Patients {
   @@map("patient")
 }
 
-model Doctors {
-  id            String     @id @default(cuid())
-  userId        String     @unique
-  years         Int        @default(0)
-  school        String
-  hospital      String
-  online        Boolean
-  lastOnline    DateTime   @default(now())
-  education     String 
-  expertise     Expertise[]
-  user          User        @relation(fields:[userId], references:[id], onDelete: Cascade)
-
-  @@map("doctor")
-}
-
 model Expertise {
   id          String     @id
   name        String     @unique
   description String?
 
   patient     Patients[] 
-  doctor      Doctors[]
+  doctorApplication      DoctorsApplication[]
 
   @@map("expertise")
 }
@@ -141,18 +125,20 @@ model RateLimit {
   @@map("rateLimit")
 }
 
-model DoctorApplication {
+model DoctorsApplication {
   id            String             @id @default(cuid())
   userId        String             @unique
   licenseNumber String             @unique
   licenseExpiry DateTime
   school        String
   hospital      String
+  education     String? 
+  expertise     Expertise[]
   status        VerificationStatus @default(PENDING)
   reviewedAt    DateTime?
   createdAt     DateTime           @default(now())
 
   user          User               @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-  @@map("doctor_application")
+  @@map("doctors_application")
 }
