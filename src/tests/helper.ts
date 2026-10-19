@@ -3,17 +3,19 @@ import { auth } from "../../lib/better-auth.ts";
 import request from "supertest"
 import { app } from "../app.ts";
 
-
 let counter: number = 0;
 
 type LoginData = {
-    name: string,
     email: string,
-    emailVerified: boolean,
-    image: null | string,
-    createdAt: Date,
+    name: string,
     updatedAt: Date,
-    id: string
+    createdAt: Date,
+    emailVerified: boolean,
+    image: string | null,
+    age: number,
+    role: string,
+    city: string,
+    sex: string
 }
 
 export type CreateUser = { 
@@ -36,11 +38,10 @@ export const createUser = async ():Promise<CreateUser> => {
             age: 38,
             city: "Cebu City",
             sex: "MALE"
-
         }
     })
 
-    const user:LoginData = await prisma.user.findUniqueOrThrow({ where: { email: email }})
+    const user: LoginData = await prisma.user.findUniqueOrThrow({ where: { email: email }})
 
     const data: CreateUser = {
         user: user,
