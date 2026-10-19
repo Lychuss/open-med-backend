@@ -14,5 +14,6 @@ export type LoginData = {
 export type CreateUser = { 
     email: string, 
     password: string,
-    user: LoginData
+    user: LoginData,
+    role: string
 }

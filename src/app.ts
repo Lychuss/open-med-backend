@@ -11,8 +11,7 @@ import { toNodeHandler } from "better-auth/node";
 
 import type { Request, Response } from "express";
 
-
-dotenv.config();
+dotenv.config({ quiet: true });
 
 export const app = express();
 
