@@ -3,26 +3,9 @@ import { auth } from "../../lib/better-auth.ts";
 import request from "supertest"
 import { app } from "../app.ts";
 
+import type { LoginData, CreateUser } from "./types/authentication.types.ts";
+
 let counter: number = 0;
-
-type LoginData = {
-    email: string,
-    name: string,
-    updatedAt: Date,
-    createdAt: Date,
-    emailVerified: boolean,
-    image: string | null,
-    age: number,
-    role: string,
-    city: string,
-    sex: string
-}
-
-export type CreateUser = { 
-    email: string, 
-    password: string,
-    user: LoginData
-}
 
 export const createUser = async ():Promise<CreateUser> => {
     counter += 1;
