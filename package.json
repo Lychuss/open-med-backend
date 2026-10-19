@@ -18,13 +18,15 @@
     "prisma": "^7.10.0",
     "socket": "^1.7.0",
     "socket.io": "^4.8.4",
+    "superjest": "^0.4.0",
+    "supertest": "^7.3.1",
     "uuid": "^14.0.3",
     "zod": "^4.6.5"
   },
   "scripts": {
     "dev": "tsx watch src/server.ts",
     "build": "prisma generate && tsc",
-    "test": "jest",
+    "test": "jest --runInBand",
     "start": "node dist/server.js"
   },
   "prisma": {
@@ -32,6 +34,8 @@
   },
   "devDependencies": {
     "@types/jest": "^30.0.0",
+    "@types/mocha": "^10.0.10",
+    "@types/supertest": "^7.2.1",
     "jest": "^30.5.2",
     "ts-jest": "^29.4.14",
     "tsx": "^4.23.15",
