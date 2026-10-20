@@ -1,9 +1,9 @@
 import dotenv from "dotenv";
-dotenv.config();
+dotenv.config({ quiet: true });
 
 import { betterAuth } from 'better-auth';
 import { prismaAdapter } from "better-auth/adapters/prisma";
-import { prisma } from "../prisma/seed";
+import { prisma } from "./prisma.ts";
 
 export const auth = betterAuth({
     advanced: {
@@ -20,8 +20,7 @@ export const auth = betterAuth({
     database: prismaAdapter(prisma, {provider: "postgresql"}),
     emailAndPassword: {
             enabled: true,
-            autoSignIn: true,
-            maxPasswordLength: 12
+            autoSignIn: true
         },
     socialProviders: {
             google: 
@@ -36,15 +35,23 @@ export const auth = betterAuth({
             trustedProviders: ["google"],
         }
     },
-    rateLimit: {
-        window: 60,
-        enabled: true,
-        max: 100,
-        storage: 'database',
-        customRules: {
-            "/sign-in/email": { window: 60, max: 5},
-            "/sign-in/google": { window: 60, max: 5},
-            "/sign-up/email": { window: 60, max: 5}
+    // rateLimit: {
+    //     window: 60,
+    //     enabled: true,
+    //     max: 100,
+    //     storage: 'database',
+    //     customRules: {
+    //         "/sign-in/email": { window: 60, max: 5},
+    //         "/sign-in/google": { window: 60, max: 5},
+    //         "/sign-up/email": { window: 60, max: 5}
+    //     }
+    // },
+    user: {
+        additionalFields: {
+            age: { type: "number", required: true },
+            role: { type: "string", defaultValue: "PATIENT", input: false},
+            city: { type: "string", required: true},
+            sex: { type: "string", required: true },
         }
-    },
+    }
 });
