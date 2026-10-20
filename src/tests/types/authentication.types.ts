@@ -8,7 +8,8 @@ export type LoginData = {
     age: number,
     role: string,
     city: string,
-    sex: string
+    sex: string,
+    id: string
 }
 
 export type CreateUser = { 

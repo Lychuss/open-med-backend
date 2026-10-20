@@ -1,8 +1,7 @@
 import { prisma } from "../../lib/prisma.ts";
 import { app } from "../app.ts";
 import request from "supertest";
-import { resetAndSeedTest } from "./helper.ts";
-import { loginUser, createUser } from "./helper.ts";
+import { resetAndSeedTest, loginUser, createUser } from "./helper.ts";
 
 beforeEach( async () => {
     await resetAndSeedTest();
