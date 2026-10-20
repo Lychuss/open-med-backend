@@ -10,6 +10,7 @@ datasource db {
 enum Role {
   PATIENT
   DOCTOR
+  ADMIN
 
   @@map("user_roles")
 }
@@ -19,23 +20,30 @@ enum Sex {
   FEMALE
 }
 
+enum VerificationStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}
+
 model User {
   id            String    @id @default(cuid())
   name          String
   email         String    @unique
   emailVerified Boolean   @default(false)
   image         String?
-  role          Role    
-  sex           Sex
+  role          Role      @default(PATIENT)
+  sex           Sex       
   age           Int
   city          String  
   patient       Patients?
-  doctor        Doctors?
+  doctorApplication        DoctorsApplication?
+  accounts      Account[]
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
 
   sessions      Session[]
-  accounts      Account[]
+
 
   @@map("user")
 }
@@ -72,6 +80,8 @@ model Account {
 
   user                  User      @relation(fields: [userId], references: [id], onDelete: Cascade)
 
+
+  @@index([userId])
   @@map("account")
 }
 
@@ -95,29 +105,42 @@ model Patients {
   @@map("patient")
 }
 
-model Doctors {
-  id            String     @id @default(cuid())
-  userId        String     @unique
-  years         Int        @default(0)
-  school        String
-  hospital      String
-  online        Boolean
-  lastOnline    DateTime
-  education     String 
-  expertise     Expertise[]
-  user          User        @relation(fields:[userId], references:[id], onDelete: Cascade)
-
-  @@map("doctor")
-}
-
 model Expertise {
   id          String     @id
   name        String     @unique
   description String?
 
   patient     Patients[] 
-  doctor      Doctors[]
+  doctorApplication      DoctorsApplication[]
 
   @@map("expertise")
 }
 
+model RateLimit {
+  id          String    @id
+  key         String
+  count       Int
+  lastRequest BigInt
+
+  @@unique([key])
+  @@map("rateLimit")
+}
+
+model DoctorsApplication {
+  id            String             @id @default(cuid())
+  userId        String             @unique
+  licenseNumber String             @unique
+  licenseExpiry DateTime
+  school        String
+  hospital      String
+  education     String?
+  profile       Bytes 
+  expertise     Expertise[]
+  status        VerificationStatus @default(PENDING)
+  reviewedAt    DateTime?
+  createdAt     DateTime           @default(now())
+
+  user          User               @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("doctors_application")
+}
