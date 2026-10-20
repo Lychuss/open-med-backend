@@ -133,7 +133,8 @@ model DoctorsApplication {
   licenseExpiry DateTime
   school        String
   hospital      String
-  education     String? 
+  education     String?
+  profile       Bytes 
   expertise     Expertise[]
   status        VerificationStatus @default(PENDING)
   reviewedAt    DateTime?
