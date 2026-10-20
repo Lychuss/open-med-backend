@@ -2,38 +2,48 @@ import { prisma } from "../../lib/prisma.ts"
 
 export const acceptingDoctors = async (applicationId: string, adminId: string) => {
 
-    const isItAdmin = await prisma.user.findUnique({
+    const isItAdmin = await prisma.user.findUniqueOrThrow({
         where: {
             id: adminId,
             role: "ADMIN"
         }
     })
 
-    if(!isItAdmin) return;
+    console.log(isItAdmin);
+
+    if(isItAdmin.role !== "ADMIN") return;
 
     return await prisma.doctorsApplication.update({
         where: {
-            id: applicationId,
+            userId: applicationId,
             status: "PENDING"
         },
         data: {
             status: "APPROVED"
         }
-    })
+    }).then( async () => await prisma.user.update({
+        where: {
+            id: applicationId
+        },
+        data: {
+            role: "DOCTOR"
+        }
+    }))
 }
 
 export const rejectedDoctors = async (applicationId: string, adminId: string) => {
-    const isItAdmin = await prisma.user.findUnique({
+    const isItAdmin = await prisma.user.findUniqueOrThrow({
         where: {
             id: adminId,
             role: "ADMIN"
         }
     })
 
-    if(!isItAdmin) return;
+    if(isItAdmin.role !== "ADMIN") return;
+
     return await prisma.doctorsApplication.update({
         where: {
-            id: applicationId,
+            userId: applicationId,
             status: "PENDING"
         },
         data: {

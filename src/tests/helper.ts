@@ -2,6 +2,8 @@ import { prisma } from "../../lib/prisma.ts";
 import { auth } from "../../lib/better-auth.ts";
 import request from "supertest"
 import { app } from "../app.ts";
+import dotenv from "dotenv";
+dotenv.config({ quiet: true });
 
 import type { LoginData, CreateUser } from "./types/authentication.types.ts";
 
@@ -50,6 +52,35 @@ export const loginUser = async (email: string, password: string) => {
     return cookies;
 }
 
+export async function getUser(email: string){
+    const role = await prisma.user.findUniqueOrThrow({
+        where: {
+            email: email
+        },
+        select: {
+            role: true,
+            id: true
+        }
+    })
+
+    const status = await prisma.doctorsApplication.findUniqueOrThrow({
+        where: {
+            userId: role.id
+        },
+        select: {
+            status: true
+        }
+    })
+
+    console.log(role.role, status.status);
+
+    if(role.role === "DOCTOR" && status.status === "APPROVED"){
+        return true;
+    }
+
+    return role.id;
+}
+
 export async function resetAndSeedTest() {
 
     if (process.env.NODE_TEST !== "test") {
@@ -72,4 +103,69 @@ export async function resetAndSeedTest() {
         ],
         skipDuplicates: true,
     });
+
+    await auth.api.signUpEmail({
+        body: {
+            name: "ADMIN USER",
+            email: process.env.ADMIN_EMAIL!,
+            password: process.env.ADMIN_PASSWORD!,
+            age: 38,
+            city: "Cebu City",
+            sex: "MALE"
+        }
+    })
+
+    await auth.api.signUpEmail({
+        body: {
+            name: "test1",
+            email: "test1@gmail.com",
+            password: "test1234",
+            age: 38,
+            city: "Cebu City",
+            sex: "MALE"
+        }
+    })
+
+    await auth.api.signUpEmail({
+        body: {
+            name: "test2",
+            email: "test2@gmail.com",
+            password: "test1234",
+            age: 21,
+            city: "Lucena City",
+            sex: "FEMALE"
+        }
+    })
+
+    await prisma.user.update({
+        where: {
+            email: process.env.ADMIN_EMAIL!
+        },
+        data: {
+            role: "ADMIN"
+        }
+    }).then( async () => {
+
+        const userId = await prisma.user.findUniqueOrThrow({
+            where: {
+                email: "test1@gmail.com"
+            },
+            select: {
+                id: true
+            }
+        })
+        console.log(userId.id);
+        await prisma.doctorsApplication.create({
+            data: {
+                userId: userId.id,
+                licenseExpiry: new Date("2028-12-31"),
+                licenseNumber: "66061",
+                school: "Enverga",
+                hospital: "Quezon Medical Center",
+                expertise: {
+                    connect: [{ id: "exp_cardiology" }, { id: "exp_dermatology" }, { id: "exp_pediatrics" }]
+                }
+            }
+        })
+    })
 }
