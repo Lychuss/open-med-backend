@@ -106,7 +106,7 @@ model Patients {
 }
 
 model Expertise {
-  id          String     @id
+  id          String     @id @default(cuid())
   name        String     @unique
   description String?
 
@@ -126,20 +126,32 @@ model RateLimit {
   @@map("rateLimit")
 }
 
+model Profile {
+  id          Int         @default(autoincrement()) @id
+  name        String
+  mimeType    String
+  data        Bytes
+  doctorApplication      DoctorsApplication[] 
+
+  @@map("profile")
+}
+
 model DoctorsApplication {
   id            String             @id @default(cuid())
+  profileId     Int                @unique
   userId        String             @unique
   licenseNumber String             @unique
   licenseExpiry DateTime
   school        String
   hospital      String
-  education     String? 
+  education     String?
   expertise     Expertise[]
   status        VerificationStatus @default(PENDING)
   reviewedAt    DateTime?
   createdAt     DateTime           @default(now())
 
   user          User               @relation(fields: [userId], references: [id], onDelete: Cascade)
+  profile       Profile            @relation(fields: [profileId], references: [id], onDelete: Cascade)
 
   @@map("doctors_application")
 }

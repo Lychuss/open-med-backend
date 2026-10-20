@@ -9,6 +9,9 @@ import adminRouter from "./routers/admin.routes.ts";
 import { auth } from "../lib/better-auth.ts";
 import { toNodeHandler } from "better-auth/node";
 
+import { requireAuth } from "./middlewares/authentication.middlewares.ts";
+
+
 import type { Request, Response } from "express";
 
 dotenv.config({ quiet: true });
@@ -28,6 +31,8 @@ app.all("/api/auth/*splat", toNodeHandler(auth));
 app.set("trust proxy", 1);
 
 app.use("/open-medical", usersRouter, adminRouter);
+
+app.get("/me", requireAuth, (req: Request, res: Response) => { return res.json(req.user)});
 
 app.get("/health", (req: Request, res: Response) => {
     res.status(200).json({ status: "Server is running!"})
