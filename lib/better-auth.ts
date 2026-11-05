@@ -48,10 +48,10 @@ export const auth = betterAuth({
     // },
     user: {
         additionalFields: {
-            age: { type: "number", required: true },
+            age: { type: "number", required: false},
             role: { type: "string", defaultValue: "PATIENT", input: false},
             city: { type: "string", required: true},
-            sex: { type: "string", required: true },
+            sex: { type: "string", required: false},
         }
     }
 });
