@@ -7,12 +7,6 @@ import { PrismaPg } from "@prisma/adapter-pg";
 const adapter = new PrismaPg({ connectionString: process.env.DATABASE_URL });
 const prisma = new PrismaClient({ adapter });
 
-// 1x1 transparent PNG, used as a placeholder profile picture
-const PLACEHOLDER_PNG = Buffer.from(
-  "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNkYPhfDwAChwGA60e6kgAAAABJRU5ErkJggg==",
-  "base64"
-);
-
 // ---------------------------------------------------------------------------
 // Data
 // ---------------------------------------------------------------------------
@@ -135,7 +129,6 @@ async function main() {
   console.log("Cleaning old data...");
   // Order matters because of foreign keys
   await prisma.doctorsApplication.deleteMany();
-  await prisma.profile.deleteMany();
   await prisma.patients.deleteMany();
   await prisma.session.deleteMany();
   await prisma.account.deleteMany();
@@ -194,13 +187,6 @@ async function main() {
             education: d.education,
             status: d.status,
             reviewedAt: reviewed ? new Date() : null,
-            profile: {
-              create: {
-                name: `${d.email.split("@")[0]}.png`,
-                mimeType: "image/png",
-                data: PLACEHOLDER_PNG,
-              },
-            },
             expertise: {
               connect: d.expertise.map((name) => ({ name })),
             },
