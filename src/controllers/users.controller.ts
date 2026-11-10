@@ -10,9 +10,6 @@ export const doctorsApplicationController = async (req: Request, res: Response) 
     const id = req.user?.id;
     const data = doctorApplicationBody.safeParse(req.body);
 
-    console.log(id);
-    console.log(data);
-
     if(!data.success || !id){
         return res.status(404).json({ message: "User client did not send all the needed requirements!", success: false });
     }

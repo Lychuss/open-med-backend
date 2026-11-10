@@ -2,6 +2,15 @@ import { prisma } from "../../lib/prisma.ts";
 import type { DoctorApplicationBody } from "../models/doctor-application.model.ts";
 
 export const findDoctors = async (expertiseTitle: string) => {
+
+    if(expertiseTitle == "all"){
+        return await prisma.doctorsApplication.findMany({
+            where: {
+                status: "APPROVED"
+            }
+        })
+    }
+
     return await prisma.doctorsApplication.findMany({
         where: {
             expertise: {
@@ -15,6 +24,7 @@ export const findDoctors = async (expertiseTitle: string) => {
 }
 
 export const addPendingDoctor = async (data: DoctorApplicationBody, userId: string) => {
+
     return await prisma.doctorsApplication.create({
         data: {
             userId: userId,
