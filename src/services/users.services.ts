@@ -1,7 +1,7 @@
 import { prisma } from "../../lib/prisma.ts";
 import type { DoctorApplicationBody } from "../models/doctor-application.model.ts";
 
-export const findDoctors = async (expertiseTitle: string) => {
+export const findDoctors = async (expertiseTitle: string, userID: string) => {
 
     if(expertiseTitle == "all"){
         return await prisma.doctorsApplication.findMany({
@@ -19,6 +19,10 @@ export const findDoctors = async (expertiseTitle: string) => {
                 }
             },
             status: "APPROVED"
+        },
+        include: {
+            user: true,
+            expertise: true
         }
     })
 }
